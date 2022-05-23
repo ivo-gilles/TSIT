@@ -22,11 +22,22 @@ class Summer2WinterYosemiteDataset(Pix2pixDataset):
         croot = opt.croot
         sroot = opt.sroot
 
-        c_image_dir = os.path.join(croot, '%sA' % opt.phase)
-        c_image_paths = sorted(make_dataset(c_image_dir, recursive=True))
+        try:
+            c_image_dir = os.path.join(croot, '%sA' % opt.phase)
+            c_image_paths = sorted(make_dataset(c_image_dir, recursive=True))
+        except:
+            # make sure the folder contains only image files (png, jpg, ...)
+            c_image_paths_read = os.listdir(croot)
+            c_image_paths = [os.path.join(croot, p) for p in c_image_paths_read if p != '']
 
-        s_image_dir = os.path.join(sroot, '%sB' % opt.phase)
-        s_image_paths = sorted(make_dataset(s_image_dir, recursive=True))
+
+        try:
+            s_image_dir = os.path.join(sroot, '%sB' % opt.phase)
+            s_image_paths = sorted(make_dataset(s_image_dir, recursive=True))
+        except:
+            # make sure the folder contains only image files (png, jpg, ...)
+            s_image_paths_read = os.listdir(sroot)
+            s_image_paths = [os.path.join(sroot, p) for p in s_image_paths_read if p != '']
 
         if opt.phase == 'train':
             s_image_paths = s_image_paths + s_image_paths

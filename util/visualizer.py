@@ -142,6 +142,8 @@ class Visualizer():
         image_name = '%s.png' % name
         save_path = os.path.join(image_dir, image_name)
         for label, image_numpy in visuals.items():
+            if label == "style":
+                continue
             visuals_lst.append(image_numpy)
 
         image_cath = np.concatenate(visuals_lst, axis=1)

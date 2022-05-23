@@ -9,7 +9,9 @@ class TestOptions(BaseOptions):
         parser.add_argument('--how_many', type=int, default=float("inf"), help='how many test images to run')
         parser.add_argument('--show_input', action='store_true', help='show input images with the synthesized image')
 
-        parser.set_defaults(preprocess_mode='scale_width_and_crop', crop_size=256, load_size=256, display_winsize=256)
+        # parser.set_defaults(preprocess_mode='scale_width_and_crop', crop_size=256, load_size=256, display_winsize=256)
+        # parser.set_defaults(preprocess_mode='scale_width_and_crop', crop_size=512, load_size=512, display_winsize=512)
+        parser.set_defaults(preprocess_mode='fixed', crop_size=1024, load_size=1024, display_winsize=1024)
         parser.set_defaults(serial_batches=True)
         parser.set_defaults(no_flip=True)
         parser.set_defaults(phase='test')

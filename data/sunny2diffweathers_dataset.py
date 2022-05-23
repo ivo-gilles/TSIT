@@ -25,21 +25,33 @@ class Sunny2DiffWeathersDataset(Pix2pixDataset):
         croot = opt.croot
         sroot = opt.sroot
 
-        with open(os.path.join(croot, 'bdd100k_lists/sunny2diffweathers/sunny_%s.txt' % opt.phase)) as c_list:
-            c_image_paths_read = c_list.read().splitlines()
+        try:
+            with open(os.path.join(croot, 'bdd100k_lists/sunny2diffweathers/sunny_%s.txt' % opt.phase)) as c_list:
+                c_image_paths_read = c_list.read().splitlines()
+                c_image_paths = [os.path.join(croot, p) for p in c_image_paths_read if p != '']
+        except:
+            # make sure the folder contains only image files (png, jpg, ...)
+            c_image_paths_read = os.listdir(croot)
             c_image_paths = [os.path.join(croot, p) for p in c_image_paths_read if p != '']
+
+
 
         if opt.phase == 'train' or opt.test_mode == 'all':
             mode_list = ['night', 'cloudy', 'rainy', 'snowy']
         else:
             mode_list = [opt.test_mode]
         s_image_paths = []
-        for mode in mode_list:
-            with open(os.path.join(sroot, 'bdd100k_lists/sunny2diffweathers/%s_%s.txt' % (mode, opt.phase))) as s_list:
-                s_image_paths_read = s_list.read().splitlines()
-                s_image_paths_mode = [os.path.join(sroot, p) for p in s_image_paths_read if p != '']
+        try:
+            for mode in mode_list:
+                with open(os.path.join(sroot, 'bdd100k_lists/sunny2diffweathers/%s_%s.txt' % (mode, opt.phase))) as s_list:
+                    s_image_paths_read = s_list.read().splitlines()
+                    s_image_paths_mode = [os.path.join(sroot, p) for p in s_image_paths_read if p != '']
             s_image_paths.extend(s_image_paths_mode)
-
+        except:
+            # make sure the folder contains only image files (png, jpg, ...)
+            # TODO: different mode but im lazy
+            s_image_paths_read = os.listdir(sroot)
+            s_image_paths = [os.path.join(sroot, p) for p in s_image_paths_read if p != '']
         while len(s_image_paths) < len(c_image_paths):
             s_image_paths = s_image_paths + s_image_paths
 
