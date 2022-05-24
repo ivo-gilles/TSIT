@@ -34,5 +34,13 @@ class TrainOptions(BaseOptions):
         parser.add_argument('--netD', type=str, default='multiscale', help='(n_layers|multiscale|image)')
         parser.add_argument('--no_TTUR', action='store_true', help='Use TTUR training scheme')
         parser.add_argument('--lambda_kld', type=float, default=0.05)
+
+        # Scale training
+        parser.add_argument('--use_bdd100k', action='store_true', help='Use Bdd100k in additional to scale data?')
+        parser.add_argument('--scale_croot', type=str, default='./datasets/scale/', help='scale content dataroot')
+        parser.add_argument('--scale_sroot', type=str, default='./datasets/scale/', help='scale style dataroot')
+        parser.add_argument('--bdd_croot', type=str, default='./datasets/bdd100k/', help='bdd content dataroot')
+        parser.add_argument('--bdd_sroot', type=str, default='./datasets/bdd100k/', help='bdd style dataroot')
+
         self.isTrain = True
         return parser
