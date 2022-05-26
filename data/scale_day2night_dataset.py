@@ -1,5 +1,6 @@
 import os
 from data.pix2pix_dataset import Pix2pixDataset
+from pathlib import Path
 
 
 class ScaleDay2NightDataset(Pix2pixDataset):
@@ -19,15 +20,19 @@ class ScaleDay2NightDataset(Pix2pixDataset):
         return parser
 
     def get_paths(self, opt):
-        scale_croot = opt.scale_croot
-        scale_sroot = opt.scale_sroot
+        scale_root = opt.scale_root
         c_image_paths, s_image_paths = [], []
 
         # Get Scale paths
-        c_image_paths_read = os.listdir(scale_croot)
-        c_image_paths += [os.path.join(scale_croot, p) for p in c_image_paths_read if p != '']
-        s_image_paths_read = os.listdir(scale_sroot)
-        s_image_paths += [os.path.join(scale_sroot, p) for p in s_image_paths_read if p != '']
+        for where in ['Downtown', 'Highway', 'Rural', 'Sub-urban']:
+            dir_path = os.path.join(opt.scale_root, "train_672w", "images", str(where))
+
+            c_image_paths_read = os.listdir(dir_path + "/Clear")
+            c_image_paths += [os.path.join(dir_path, "Clear", p) for p in c_image_paths_read if p != '']
+            c_image_paths_read = os.listdir(dir_path + "/Cloudy")
+            c_image_paths += [os.path.join(dir_path, "Cloudy", p) for p in c_image_paths_read if p != '']
+            s_image_paths_read = os.listdir(dir_path + "/Night")
+            s_image_paths += [os.path.join(dir_path, "Night", p) for p in s_image_paths_read if p != '']
 
         instance_paths = []
 
@@ -37,14 +42,13 @@ class ScaleDay2NightDataset(Pix2pixDataset):
 
         # Get BDD100K path
         if opt.use_bdd100k:
-            bdd_croot = opt.bdd_croot
-            bdd_sroot = opt.bdd_sroot
-            with open(os.path.join(bdd_croot, 'bdd100k_lists/day2night/day_%s.txt' % opt.phase)) as c_list:
+            bdd_root = opt.bdd_root
+            with open(os.path.join(bdd_root, 'bdd100k_lists/day2night/day_%s.txt' % opt.phase)) as c_list:
                 c_image_paths_read = c_list.read().splitlines()
-                c_image_paths += [os.path.join(bdd_croot, p) for p in c_image_paths_read if p != '']
-            with open(os.path.join(bdd_sroot, 'bdd100k_lists/day2night/night_%s.txt' % opt.phase)) as s_list:
+                c_image_paths += [os.path.join(bdd_root, p) for p in c_image_paths_read if p != '']
+            with open(os.path.join(bdd_root, 'bdd100k_lists/day2night/night_%s.txt' % opt.phase)) as s_list:
                 s_image_paths_read = s_list.read().splitlines()
-                s_image_paths += [os.path.join(bdd_sroot, p) for p in s_image_paths_read if p != '']
+                s_image_paths += [os.path.join(bdd_root, p) for p in s_image_paths_read if p != '']
             length = min(len(c_image_paths), len(s_image_paths))
             c_image_paths = c_image_paths[:length]
             s_image_paths = s_image_paths[:length]

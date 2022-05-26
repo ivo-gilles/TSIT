@@ -37,10 +37,8 @@ class TrainOptions(BaseOptions):
 
         # Scale training
         parser.add_argument('--use_bdd100k', action='store_true', help='Use Bdd100k in additional to scale data?')
-        parser.add_argument('--scale_croot', type=str, default='./datasets/scale/', help='scale content dataroot')
-        parser.add_argument('--scale_sroot', type=str, default='./datasets/scale/', help='scale style dataroot')
-        parser.add_argument('--bdd_croot', type=str, default='./datasets/bdd100k/', help='bdd content dataroot')
-        parser.add_argument('--bdd_sroot', type=str, default='./datasets/bdd100k/', help='bdd style dataroot')
+        parser.add_argument('--scale_root', type=str, default='./datasets/scale_combined/', help='scale content dataroot')
+        parser.add_argument('--bdd_root', type=str, default='./datasets/bdd100k/', help='bdd content dataroot')
 
         self.isTrain = True
         return parser

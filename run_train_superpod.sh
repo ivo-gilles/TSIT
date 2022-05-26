@@ -6,31 +6,28 @@ NAME='ast_day2night'
 TASK='AST'
 DATA='scale_day2night'
 
+# Database, change to where you keep data
+BDD_DATABASE=/lustre/scratch/client/vinai/users/trungpq3/datasets/bdd100k
+SCALE_DATABASE=/lustre/scratch/client/vinai/users/trungpq3/datasets/scale_combined
+
 # Dataroot for training
 HOME=$(pwd)
 DATADIR=$HOME/datasets
-SCALE_CROOT=${DATADIR}/scale/Day
-SCALE_SROOT=${DATADIR}/scale/Night
-BDD_CROOT=${DATADIR}/bdd100k
-BDD_SROOT=${DATADIR}/bdd100k
-
-mkdir -p ${SCALE_CROOT} ${SCALE_SROOT} ${BDD_CROOT} ${BDD_SROOT}
+SCALE_ROOT=${DATADIR}/scale_combined
+BDD_ROOT=${DATADIR}/bdd100k
 
 # Get BDD datasets
-cp /vinai-public-dataset/BDD100K/bdd100k_images_100k.zip ${DATADIR}
-cd ${DATADIR} && unzip bdd100k_images_100k.zip
-cp -r ${DATADIR}/bdd100k_lists/ ${BDD_CROOT}/
-cd ..
+ln -s ${BDD_DATABASE} ${DATADIR}
+cp -r ${DATADIR}/bdd100k_lists/ ${BDD_ROOT}/
 
 # Get Scale data
-DATABASE='/vinai-autopilot/data/lane/scale_combined/train_672w/images/'
-
-for name in 'Downtown'  'Highway'  'Rural'  'Sub-urban'
-do
-    cp -r $DATABASE/$name/Clear/* ${SCALE_CROOT}
-    cp -r $DATABASE/$name/Cloudy/* ${SCALE_CROOT}
-    cp -r $DATABASE/$name/Night/* ${SCALE_SROOT}
-done
+ln -s ${SCALE_DATABASE} ${DATADIR}
+# for name in 'Downtown'  'Highway'  'Rural'  'Sub-urban'
+# do
+#     cp -r $DATABASE/$name/Clear/* ${SCALE_CROOT}
+#     cp -r $DATABASE/$name/Cloudy/* ${SCALE_CROOT}
+#     cp -r $DATABASE/$name/Night/* ${SCALE_SROOT}
+# done
 
 CKPTROOT='./checkpoints'
 WORKER=4
@@ -40,7 +37,7 @@ WORKER=4
 python3 train.py \
     --name $NAME \
     --task $TASK \
-    --gpu_ids 5 \
+    --gpu_ids 0 \
     --checkpoints_dir $CKPTROOT \
     --batchSize 1 \
     --dataset_mode $DATA \
@@ -56,8 +53,6 @@ python3 train.py \
     --lambda_vgg 2 \
     --lambda_feat 1 \
     --use_bdd100k \
-    --scale_croot ${SCALE_CROOT} \
-    --scale_sroot ${SCALE_SROOT} \
-    --bdd_croot ${BDD_CROOT} \
-    --bdd_sroot ${BDD_SROOT} \
+    --scale_root ${SCALE_ROOT} \
+    --bdd_root ${BDD_ROOT} \
 
