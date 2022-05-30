@@ -37,6 +37,7 @@ class ScaleDay2NightDataset(Pix2pixDataset):
         instance_paths = []
 
         length = min(len(c_image_paths), len(s_image_paths))
+        print(f"Scale data: {len(c_image_paths)} day, {len(s_image_paths)} night, use {length} images each")
         c_image_paths = c_image_paths[:length]
         s_image_paths = s_image_paths[:length]
 
@@ -49,7 +50,9 @@ class ScaleDay2NightDataset(Pix2pixDataset):
             with open(os.path.join(bdd_root, 'bdd100k_lists/day2night/night_%s.txt' % opt.phase)) as s_list:
                 s_image_paths_read = s_list.read().splitlines()
                 s_image_paths += [os.path.join(bdd_root, p) for p in s_image_paths_read if p != '']
+            scale_length = length
             length = min(len(c_image_paths), len(s_image_paths))
+            print(f"BDD100K data: {len(c_image_paths) - scale_length} day, {len(s_image_paths) - scale_length} night, use {length - scale_length} images each")
             c_image_paths = c_image_paths[:length]
             s_image_paths = s_image_paths[:length]
 
